@@ -1,63 +1,57 @@
-const express = require("express");
-
 const cors = require("cors");
-const mongoose = require("mongoose");
+const exp = require("express");
+const bp = require("body-parser");
+const passport = require("passport");
+const { connect } = require("mongoose");
+const { success, error } = require("consola");
 
-// const users = require("./routes/users");
-const AuthRoute = require('./routes/auth')
 
+testAPIRouter = require("./routes/testAPI");
 
-require("dotenv").config();
+// Bring in the app constants
+const { DB, PORT } = require("./config");
 
-const app = express();
-const port = process.env.PORT || 5000;
+// Initialize the application
+const app = exp();
+
+// Middlewares
 app.use(cors());
-app.use(express.json());
+app.use(bp.json());
+app.use(passport.initialize());
 
-// app.use(require("./routes/record"));
-// get driver connection
-// const dbo = require("./db/conn");
- 
-const { MongoClient } = require("mongodb");
-const Db = process.env.ATLAS_URI;
-const client = new MongoClient(Db, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
- 
-var _db;
- 
-module.exports = {
-  connectToServer: function (callback) {
-    client.connect(function (err, db) {
-      // Verify we got a good "db" object
-      if (db)
-      {
-        _db = db.db("myFirstDatabase");
-        console.log("Successfully connected to MongoDB."); 
-      }
-      return callback(err);
-         });
-  },
- 
-  getDb: function () {
-    return _db;
-  },
+require("./middlewares/passport")(passport);
+
+// User Router Middleware
+app.use("/api/auth", require("./routes/auth"));
+app.use("/testAPI",testAPIRouter);
+
+
+
+const startApp = async () => {
+  try {
+    // Connection With DB
+    await connect(DB, {
+      useFindAndModify: true,
+      useUnifiedTopology: true,
+      useNewUrlParser: true
+    });
+
+    success({
+      message: `Successfully connected with the Database \n${DB}`,
+      badge: true
+    });
+
+    // Start Listenting for the server on PORT
+    app.listen(PORT, () =>
+      success({ message: `Server started on PORT ${PORT}`, badge: true })
+    );
+  } catch (err) {
+    error({
+      message: `Unable to connect with Database \n${err}`,
+      badge: true
+    });
+    startApp();
+  }
 };
 
-// const userRouter = require('./routes/users')
- // Passport middleware
-// app.use(passport.initialize());
-// Passport config
-// require('./config/passport') (passport);
-// Routes
-app.use('/auth', AuthRoute);
-app.listen(port, () => {
-  // perform a database connection when server starts
-//   dbo.connectToServer(function (err) {
-//     if (err) console.error(err);
- 
-//   });
-  console.log(`Server is running on port: ${port}`);
-});
- app.use('/api', AuthRoute)
+startApp();
