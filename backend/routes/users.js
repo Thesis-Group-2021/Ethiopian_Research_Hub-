@@ -1,92 +1,88 @@
 const router = require("express").Router();
-// Bring in the User Registration function
-const {
-  //  userAuth,
-  //  userLogin,
-  //  checkRole,
-  userRegister,
-  serializeUser
-} = require("../controllers/UserController");
 
-// Users Registeration Route
-// router.post("/register-user", async (req, res) => {
-//   await userRegister(req.body, "user", res);
-// });
+const Client = require("../models/Client");
 
-// Admin Registration Route
-// router.post("/register-admin", async (req, res) => {
-//   await userRegister(req.body, "admin", res);
-// });
+router.route('/add-user').post((req, res) => {
+    
+    const username = req.body.username;
+    const password =req.body.password;
+    const firstname =req.body.firstname;
+    const lastname =req.body.lastname;
+    const gender =req.body.gender;
+    const institute =req.body.institute;
+    const profilepicture =req.body.profilepicture;
+    const email =req.body.email;
+    const academiclevel =req.body.academiclevel;
+    const year =req.body.year;
+    const date =req.body.date;
 
-// // Super Admin Registration Route
-// router.post("/register-super-admin", async (req, res) => {
-//   await userRegister(req.body, "superadmin", res);
-// });
 
-// //Approver Registration Route
+    const newClient = new Client({
+       username,password,firstname,lastname,gender,institute,
+        profilepicture,email,academiclevel,date,year
+    });
 
-// router.post("/register-approver", async (req, res) => {
-//   await userRegister(req.body, "approver", res);
-// });
+    newClient.save()
+    .then(() => res.json('User added'))
+    .catch(err => res.status(400).json('Error: ' + err));
 
-// // Users Login Route
-// router.post("/login-user", async (req, res) => {
-//   await userLogin(req.body, "user", res);
-// });
+});
+router.route('/user-list').get((req, res) => {
+    Client.find( ) 
+    .then(client => res.json(client))
+    .catch(err => res.status(400).json('Error:' + err));
+  });
+  router.route('/usertotal').get((req, res) => {
+    Client.count(  ) 
+    .then(client => res.json(client))
+    .catch(err => res.status(400).json('Error:' + err));
+  });
 
-// // Admin Login Route
-// router.post("/login-admin", async (req, res) => {
-//   await userLogin(req.body, "admin", res);
-// });
 
-// // Super Admin Login Route
-// router.post("/login-super-admin", async (req, res) => {
-//   await userLogin(req.body, "superadmin", res);
-// });
-
-// // Profile Route
-// router.get("/profile", userAuth, async (req, res) => {
-//   return res.json(serializeUser(req.user));
-// });
-
-// // Users Protected Route
-// router.get(
-//   "/user-protectd",
-//   userAuth,
-//   checkRole(["user"]),
-// async (req, res) => {
-//   return res.json("Hello User");
-//   }
-//  );
-
-// // Admin Protected Route
-// router.get(
-//   "/admin-protectd",
-//   userAuth,
-//   checkRole(["admin"]),
-//   async (req, res) => {
-//     return res.json("Hello Admin");
-//   }
-// );
-
-// // Super Admin Protected Route
-// router.get(
-//   "/super-admin-protectd",
-//   userAuth,
-//   checkRole(["superadmin"]),
-//   async (req, res) => {
-//     return res.json("Hello Super Admin");
-//   }
-// );
-
-// // Super Admin Protected Route
-// router.get(
-//   "/super-admin-and-admin-protectd",
-//   userAuth,
-//   checkRole(["superadmin", "admin"]),
-//   async (req, res) => {
-//     return res.json("Super admin and Admin");
-//   }
-// );
-
+  router.route('/:_id').get((req, res) => {
+    const _id = req.params._id;
+    Client.findById(_id)
+    .then(data => {
+      if (!data)
+      res.status(404).send({ message: "id not found" + _id});
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+      .status(500)
+      .send({ message: "error retriving with id" + 
+      _id});
+    });
+  });
+  
+  router.route('/update:id').put((req, res, next) => {
+    const clientupdate= new Client({
+      _id: req.params.id,
+      username: req.body.username,
+      password: req.body.password,
+      lastname: req.body.lastname,
+      gender: req.body.gender,
+      institute: req.body.institute,
+      profilepicture: req.body.profilepicture,
+      email: req.body.email,
+      academiclevel: req.body.academiclevel,
+      year: req.body.year,
+      date: req.body.date
+      
+    });
+    Client.updateOne({_id: req.params.id}, clientupdate).then(
+      () => {
+        res.status(201).json({
+          message: 'user(Client) updated successfully!'
+        });
+      }
+    ).catch(
+      (error) => {
+        res.status(400).json({
+          error: error
+        });
+      }
+    );
+  });
+  
 module.exports = router;

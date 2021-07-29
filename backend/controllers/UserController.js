@@ -21,9 +21,17 @@ const userRegister = async (userDets, role, res) => {
     // Get the hashed password
     const password = await bcrypt.hash(userDets.password, 12);
     // create a new user
+    const name = req.body.name;
+    const file  = req.body.file;
+    const title = req.body.title;
+    const description = req.body.descrioption;
+    const under = req.body.under;
+    const academiclevel = req.body.academiclevel;
+    const date = req.body.date;
+
     const newUser = new User({
       ...userDets,
-      password,
+      password,name,file,title,description,under,academiclevel,date,
       role
      
   
@@ -31,7 +39,7 @@ const userRegister = async (userDets, role, res) => {
 
     await newUser.save();
     return res.status(201).json({
-      message: "Hurry! now you are successfully registred. Please nor login.",
+      message: "you are successfully registred.",
       success: true
     });
   } catch (err) {
@@ -44,9 +52,32 @@ const userRegister = async (userDets, role, res) => {
   }
 };
 
-module.exports = {
-  
-    userRegister,
-  
-    
-  };
+ 
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.username = req.body.username || user.email;
+    user.pic = req.body.pic || user.pic;
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      username: updatedUser.name,
+      pic: updatedUser.pic,
+      bio: updatedUser.bio,
+      token: generateToken(updatedUser._id),
+    });
+  } else {
+    res.status(404);
+    throw new Error("User Not Found");
+  }
+});
+
+
+module.exports = {userRegister};

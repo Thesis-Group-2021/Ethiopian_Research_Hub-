@@ -2,10 +2,8 @@ const Mongoose = require("mongoose")
 
 const Schema = Mongoose.Schema
 
-const instituteSchema = new Schema ({
-    id:{
-        type: Number
-    },
+const ApproverSchema = new Schema ({
+  
     username:{
         type: String
     },
@@ -35,7 +33,7 @@ const instituteSchema = new Schema ({
     },
     
     email:{
-        type:char
+        type:String
     },
     under :{
         type:String
@@ -48,5 +46,5 @@ const instituteSchema = new Schema ({
     timestamps: true
 })
 
-const User = Mongoose.model('Institute', instituteSchema)
-module.exports = Institute
+const Approver = Mongoose.model('Approver', ApproverSchema)
+module.exports = Approver

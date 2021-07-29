@@ -1,12 +1,12 @@
 const Mongoose = require("mongoose")
 
-const Schema = Mongoose.Schema
+const Schema = Mongoose.Schema;
+
+require('mongoose-type-email');
 
 const instituteSchema = new Schema ({
-    id:{
-        type: Number
-    },
-    name:{
+   
+    username:{
         type: String
     },
     password: {
@@ -21,10 +21,10 @@ const instituteSchema = new Schema ({
     phone:{
         type:Number
     },
-    
-    email:{
-        type:char
-    },
+    role:{
+        type:String
+    },    
+    email:Mongoose.SchemaTypes.Email,
     under :{
         type:String
     },
@@ -36,5 +36,5 @@ const instituteSchema = new Schema ({
     timestamps: true
 })
 
-const User = Mongoose.model('Institute', instituteSchema)
+const Institute = Mongoose.model('Institute', instituteSchema)
 module.exports = Institute

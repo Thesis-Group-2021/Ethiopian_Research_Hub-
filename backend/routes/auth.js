@@ -10,7 +10,7 @@ const {
 
 // Users Registeration Route
 router.post("/register-user", async (req, res) => {
-  await userRegister(req.body, "user", res);
+  await userRegister(req.body, "User", res);
 });
 
 // Admin Registration Route
@@ -31,7 +31,7 @@ router.post("/register-approver", async (req, res) => {
 
 // Users Login Route
 router.post("/login-user", async (req, res) => {
-  await userLogin(req.body, "user", res);
+  await userLogin(req.body, "User", res);
 });
 
 // Admin Login Route
