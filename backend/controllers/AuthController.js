@@ -113,7 +113,7 @@ const userLogin = async (userCreds, role, res) => {
     let result = {
       username: user.username,
       role: user.role,
-      token: `Bearer ${token}`,
+      token: `${token}`,
       expiresIn: 168
     };
 
