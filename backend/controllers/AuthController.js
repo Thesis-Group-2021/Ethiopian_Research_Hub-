@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
@@ -104,24 +105,42 @@ const userLogin = async (userCreds, role, res) => {
         user_id: user._id,
         role: user.role,
         username: user.username,
+=======
+const User = require('../models/User')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
+
+
+const register = (req, res, next) =>{
+    bcrypt.hash(req.body.password, 6, function(err, hashedpass){
+        if(err){
+            res.json({
+                error: err
+            })
+        }
+            let user = new User ({
+                name: req.body.name,
+                password: hashedpass
+            })
+>>>>>>> parent of 6deee41 (update)
         
-      },
-      'SECRET',
-      { expiresIn: "7 days" }
-    );
-
-    let result = {
-      username: user.username,
-      role: user.role,
-      token: `Bearer ${token}`,
-      expiresIn: 168
-    };
-
-    return res.status(200).json({
-      ...result,
-      message: "Hurray! You are now logged in.",
-      success: true
+            user.save()
+            .then(user => {
+                res.json({
+                    massage: 'user Added Successfully!'
+                })
+            })
+        
+            .catch(error => {
+                res.json({
+                    message: 'An error occured'
+                })
+            })
+        
+    })
    
+<<<<<<< HEAD
     });
   } else {
     return res.status(403).json({
@@ -163,11 +182,8 @@ const serializeUser = user => {
     createdAt: user.createdAt
   };
 };
+=======
+}
+>>>>>>> parent of 6deee41 (update)
 
-module.exports = {
-  userAuth,
-  checkRole,
-  userLogin,
-  userRegister, 
-  serializeUser
-};
+module.exports ={register }
