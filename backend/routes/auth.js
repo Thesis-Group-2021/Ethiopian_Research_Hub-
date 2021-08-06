@@ -1,28 +1,19 @@
-const router = require("express").Router();
-// Bring in the User Registration function
-const {
-  userAuth,
-  userLogin,
-  checkRole,
-  userRegister,
-  serializeUser
-} = require("../controllers/AuthController");
+const express = require('express')
+const router = express.Router()
 
+<<<<<<< HEAD
 // Users Registeration Route
 router.post("/register-user", async (req, res) => {
   await userRegister(req.body, "User", res);
 });
+=======
+const AuthController = require('../controllers/AuthController')
+>>>>>>> parent of 6deee41 (update)
 
-// Admin Registration Route
-router.post("/register-admin", async (req, res) => {
-  await userRegister(req.body, "admin", res);
-});
+router.post('/register', AuthController.register)
 
-// Super Admin Registration Route
-router.post("/register-super-admin", async (req, res) => {
-  await userRegister(req.body, "superadmin", res);
-});
 
+<<<<<<< HEAD
 //Approver Registration Route
 
 router.post("/register-approver", async (req, res) => {
@@ -92,3 +83,6 @@ router.get(
 );
 
 module.exports = router;
+=======
+module.exports = router
+>>>>>>> parent of 6deee41 (update)
